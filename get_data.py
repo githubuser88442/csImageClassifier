@@ -10,6 +10,9 @@ from pynput.keyboard import Key, KeyCode, Listener
 Tool to get and label images for training data.
 Waits for keyinput, "o" for to label image as shoot (label), "p" to label image as background, "x" to exit.
 """
+DATA_PATH = Path('data/extra/200')
+FILE_COUNT_SHOOT = len([name for name in os.listdir(DATA_PATH/'shoot')])
+FILE_COUNT_BG = len([name for name in os.listdir(DATA_PATH/'bg')])
 
 def get_image(count=0, label='img', dir=''):
     with mss.mss() as sct:
@@ -17,19 +20,15 @@ def get_image(count=0, label='img', dir=''):
         monitor = sct.monitors[1]
 
         # Capture a bbox using percent values
-        left = monitor['left'] + monitor['width'] * 45 // 100  # 45% from the left
-        top = monitor['top'] + monitor['height'] * 45 // 100  # 45% from the top
-        right = left + 150  # 400px width
-        lower = top + 150  # 400px height
+        left = monitor['left'] + monitor['width'] * 45 // 100 - 4 # 50% from the left
+        top = monitor['top'] + monitor['height'] * 41 // 100 - 3  # 50% from the top minus some px
+        right = left + 200  # 200px width
+        lower = top + 200  # 200px height
         bbox = (left, top, right, lower)
 
-        im = sct.grab(bbox)
+        img = sct.grab(bbox)
         # Save it!
-        mss.tools.to_png(im.rgb, im.size, output='data/ter/{}/{}.{}.png'.format(dir, count, label))
-
-DATA_PATH = Path('data/ter')
-FILE_COUNT_SHOOT = len([name for name in os.listdir(DATA_PATH/'shoot')])
-FILE_COUNT_BG = len([name for name in os.listdir(DATA_PATH/'bg')])
+        mss.tools.to_png(img.rgb, img.size, output=DATA_PATH/'{}/{}.{}.png'.format(dir, count, label))
 
 
 print('Shoot, bg count:', FILE_COUNT_SHOOT, FILE_COUNT_BG)
@@ -42,6 +41,7 @@ def on_press(key):
     pass
 
 def on_release(key):
+    # Global to update the file count without having to recount
     global FILE_COUNT_BG
     global FILE_COUNT_SHOOT
 
