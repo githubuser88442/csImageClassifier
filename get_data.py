@@ -47,14 +47,14 @@ def on_release(key):
 
     if key == KeyCode(char='o'):
         print('Shoot image', FILE_COUNT_SHOOT)
-        for i in range(20):
+        for i in range(10):
             FILE_COUNT_SHOOT += 1
             get_image(count=FILE_COUNT_SHOOT, label='ter', dir='shoot')
             time.sleep(0.0)
 
     if key == KeyCode(char='p'):
         print('Bg image', FILE_COUNT_BG)
-        for i in range(20):
+        for i in range(10):
             FILE_COUNT_BG += 1
             get_image(count=FILE_COUNT_BG, label='bg', dir='bg')
             time.sleep(0.02)
