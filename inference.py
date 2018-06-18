@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 import mss
 import mss.tools
 from pynput.keyboard import Key, KeyCode, Listener
-
+from pynput.mouse import Button, Controller
 from fastai.model import *
 from torchvision.transforms import Normalize, Compose, CenterCrop, Resize, ToTensor
 
@@ -19,6 +19,8 @@ print('Loading..')
 MODEL = torch.load(PATH/"models/torch_model_v1").eval()
 CLASSES = ['bg', 'shoot']
 print('Model loaded!')
+#Mouse control
+MOUSE = Controller()
 
 def return_image(**kwargs):
     """Take screenshot and return the image.
@@ -62,19 +64,27 @@ def predict_on_img(img):
 
 def inference():
     """Gets an img via screenshot and predicts on it in realtime"""
+    print('Get ready!')
+    cd = 3
+    for i in range(cd):
+        time.sleep(1)
+        print(cd - i)
 
     print('Starting inference!')
-    while_count = 0
+    # while_count = 0
     run = True
     s_time = time.time()
     while run:
-        pred = predict_on_img(return_image(save_img=False, count=while_count, path=PATH))
+        pred = predict_on_img(return_image())
+        # pred = predict_on_img(return_image(save_img=False, count=while_count, path=PATH))
         #print(pred, CLASSES[pred[0]])
+        if CLASSES[pred[0]] == 'shoot':
+            MOUSE.click(Button.left, 1)
 
-        while_count += 1
-        if while_count >= 60:
-            run = False
-            print('60 frames processed, took {}'.format(time.time() - s_time))
+        # while_count += 1
+        # if while_count >= 60:
+        #     run = False
+        #     print('60 frames processed, took {}'.format(time.time() - s_time))
 
 def test_on_image(img_name):
     """ very quick method to test on a single image in /random/ folder """
