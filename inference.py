@@ -16,7 +16,7 @@ from torchvision.transforms import Normalize, Compose, CenterCrop, Resize, ToTen
 PATH = Path('data/150/')
 # PyTorch model
 print('Loading..')
-MODEL = torch.load(PATH/"models/torch_model_v1").eval()
+MODEL = torch.load(PATH/"models/final_model").eval()
 CLASSES = ['bg', 'shoot']
 print('Model loaded!')
 #Mouse control
@@ -24,7 +24,7 @@ MOUSE = Controller()
 
 def return_image(**kwargs):
     """Take screenshot and return the image.
-    **kwargs for debugging: save images to a folder - pass in save_img=True, count=(int), path"""
+    **kwargs for debugging: save images to a folder - pass in save_img=True, count=int, path"""
     with mss.mss() as sct:
         # Use the 1st monitor
         monitor = sct.monitors[1]
@@ -71,7 +71,7 @@ def inference():
         print(cd - i)
 
     print('Starting inference!')
-    # while_count = 0
+    while_count = 0
     run = True
     s_time = time.time()
     while run:
